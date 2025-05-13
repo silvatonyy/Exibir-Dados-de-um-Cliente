@@ -1,0 +1,33 @@
+REPORT  zts_ars_display_customers.
+
+SELECTION-SCREEN: BEGIN OF BLOCK b01 WITH FRAME TITLE text-001.
+PARAMETERS: p_kunnr TYPE kna1-kunnr.
+SELECTION-SCREEN: END OF BLOCK b01.
+
+TYPES: BEGIN OF t_y_final,
+       name1 TYPE kna1-name1,
+       stras TYPE kna1-stras,
+       ort01 TYPE kna1-ort01,
+       land1 TYPE kna1-land1,
+END OF t_y_final.
+
+DATA: it_kna1 TYPE TABLE OF t_y_final,
+      wa_kna1 TYPE t_y_final.
+
+START-OF-SELECTION.
+
+  SELECT name1 stras ort01 land1
+    FROM kna1
+    INTO TABLE it_kna1
+    WHERE kunnr EQ p_kunnr.
+
+  IF sy-subrc <> 0.
+    MESSAGE 'Cliente não encontrado' TYPE 'I'.
+  ENDIF.
+
+  LOOP AT it_kna1 INTO wa_kna1.
+    WRITE: 'Nome:', wa_kna1-name1.
+    WRITE: 'Endereço:', wa_kna1-stras.
+    WRITE: 'Local:', wa_kna1-ort01.
+    WRITE: 'Pais:', wa_kna1-land1.
+  ENDLOOP.
